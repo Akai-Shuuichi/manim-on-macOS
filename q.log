@@ -1,0 +1,30 @@
+This is pdfTeX, Version 3.14159265-2.6-1.40.19 (MiKTeX 2.9.6840) (preloaded format=latex 2018.12.21)  21 DEC 2018 17:00
+entering extended mode
+**q
+
+("/Users/wangchen/Library/Application Support/MiKTeX/texmfs/install/tex/latex/t
+ools/q.tex"
+! Interruption.
+<to be read again> 
+                   \begingroup 
+l.1 
+    %%
+? 
+LaTeX2e <2018-12-01>
+File ignored
+)
+! Emergency stop.
+<*> q
+     
+*** (job aborted, no legal \end found)
+
+ 
+Here is how much of TeX's memory you used:
+ 7 strings out of 494867
+ 305 string characters out of 3176482
+ 51824 words of memory out of 3000000
+ 3757 multiletter control sequences out of 15000+200000
+ 3640 words of font info for 14 fonts, out of 3000000 for 9000
+ 0 hyphenation exceptions out of 8191
+ 5i,0n,1p,82b,8s stack positions out of 5000i,500n,10000p,200000b,50000s
+No pages of output.
