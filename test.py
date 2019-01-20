@@ -7,7 +7,150 @@ from old_projects.triangle_of_power.triangle import TOP, OPERATION_COLORS
 #
 # Use the flat -l for a faster rendering at a lower
 # quality, use -s to skip to the end and just show
-# the final frame, and use -n <number> to skip ahead
+
+class Circletoquare(Scene):
+    def construct(self):
+        circle = Circle()
+        self.play()
+        self.wait()
+
+class LogoGeneration(Scene):
+    CONFIG = {
+        "radius"               : 1.5,
+        "inner_radius_ratio"   : 0.55,
+        "circle_density"       : 100,
+        "circle_blue"          : "skyblue",
+        "circle_brown"         : DARK_BROWN,
+        "circle_repeats"       : 5,
+        "sphere_density"       : 50,
+        "sphere_blue"          : DARK_BLUE,
+        "sphere_brown"         : LIGHT_BROWN,
+        "interpolation_factor" : 0.3,
+        "frame_duration"       : 0.03,
+        "run_time"             : 3,
+    }
+    def construct(self):
+        digest_config(self, {})
+        ## Usually shouldn't need this...
+        self.frame_duration = self.CONFIG["frame_duration"]
+        ##
+        digest_config(self, {})
+        circle = Circle(
+            density = self.circle_density, 
+            color   = self.circle_blue
+        )
+        circle.repeat(self.circle_repeats)
+        circle.scale(self.radius)
+        sphere = Sphere(
+            density = self.sphere_density, 
+            color   = self.sphere_blue
+        )
+        sphere.scale(self.radius)
+        sphere.rotate(-np.pi / 7, [1, 0, 0])
+        sphere.rotate(-np.pi / 7)
+        iris = Mobject()
+        iris.interpolate(
+            circle, sphere,
+            self.interpolation_factor
+        )
+        for mob, color in [(iris, self.sphere_brown), (circle, self.circle_brown)]:
+            mob.set_color(color, lambda x_y_z : x_y_z[0] < 0 and x_y_z[1] > 0)
+            mob.set_color(
+                "black", 
+                lambda point: get_norm(point) < \
+                              self.inner_radius_ratio*self.radius
+            )
+        self.name_mob = TextMobject("3Blue1Brown").center()
+        self.name_mob.set_color("grey")
+        self.name_mob.shift(2*DOWN)
+
+        self.play(Transform(
+            circle, iris, 
+            run_time = self.run_time
+        ))
+        self.frames = drag_pixels(self.frames)
+        self.save_image(IMAGE_DIR)
+        self.logo = MobjectFromPixelArray(self.frames[-1])
+        self.add(self.name_mob)
+        self.wait()
+
+class UdatersExample(Scene):
+    def construct(self):
+        decimal = DecimalNumber(
+            0,
+            show_ellipsis=True,
+            num_decimal_places=3,
+            include_sign=True,
+        )
+        square = Square().to_edge(UP)
+
+        decimal.add_updater(lambda d: d.next_to(square, RIGHT))
+        decimal.add_updater(lambda d: d.set_value(square.get_center()[1]))
+        self.add(square, decimal)
+        self.play(
+            square.to_edge, DOWN,
+            rate_func=there_and_back,
+            run_time=5,
+        )
+        self.wait()
+
+
+class OpeningManimExample(Scene):
+    def construct(self):
+        title = TextMobject("This is some \\LaTeX")
+        basel = TexMobject(
+            "\\sum_{n=1}^\\infty "
+            "\\frac{1}{n^2} = \\frac{\\pi^2}{6}"
+        )
+        VGroup(title, basel).arrange_submobjects(DOWN)
+        self.play(
+            Write(title),
+            FadeInFrom(basel, UP),
+        )
+        self.wait()
+
+        transform_title = TextMobject("That was a transform")
+        transform_title.to_corner(UP + LEFT)
+        self.play(
+            Transform(title, transform_title),
+            LaggedStart(FadeOutAndShiftDown, basel),
+        )
+        self.wait()
+
+        grid = NumberPlane()
+        grid_title = TextMobject("This is a grid")
+        grid_title.scale(1.5)
+        grid_title.move_to(transform_title)
+
+        self.add(grid, grid_title)  # Make sure title is on top of grid
+        self.play(
+            FadeOut(title),
+            FadeInFromDown(grid_title),
+            Write(grid),
+        )
+        self.wait()
+
+        grid_transform_title = TextMobject(
+            "That was a non-linear function \\\\"
+            "applied to the grid"
+        )
+        grid_transform_title.move_to(grid_title, UL)
+        grid.prepare_for_nonlinear_transform()
+        self.play(
+            grid.apply_function,
+            lambda p: p + np.array([
+                np.sin(p[1]),
+                np.sin(p[0]),
+                0,
+            ]),
+            run_time=3,
+        )
+        self.wait()
+        self.play(
+            Transform(grid_title, grid_transform_title)
+        )
+        self.wait()
+
 class Circletotingting(Scene):
 	"""docstring for CircletotiScene"""
 	def construct(self):
